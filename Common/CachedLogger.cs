@@ -5,9 +5,9 @@ namespace MyLogger.Common;
 internal class CachedLogger : ILogger
 {
     private readonly string _category;
-    private readonly CachedLoggerProvider _provider;
+    private readonly ICreateLogEntries _provider;
 
-    internal CachedLogger(CachedLoggerProvider provider, string category, LogLevel initialLogLevel)
+    internal CachedLogger(ICreateLogEntries provider, string category, LogLevel initialLogLevel)
     {
         _category = category;
         _provider = provider;
@@ -19,7 +19,7 @@ internal class CachedLogger : ILogger
     #region ILogger interface
     public IDisposable? BeginScope<TState>(TState state) where TState : notnull
     {
-        throw new NotImplementedException();
+        return null;
     }
 
     public bool IsEnabled(LogLevel logLevel) =>
@@ -27,8 +27,8 @@ internal class CachedLogger : ILogger
 
     public void Log<TState>(LogLevel logLevel, EventId eventId, TState state, Exception? exception, Func<TState, Exception?, string> formatter)
     {
-        _provider.CreateLogEntry(logLevel, _category, formatter(state, exception), exception);
-        throw new NotImplementedException();
+        if (IsEnabled(logLevel))
+            _provider.CreateLogEntry(logLevel, _category, formatter(state, exception), exception);
     }
     #endregion
 }

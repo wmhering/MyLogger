@@ -2,8 +2,20 @@
 
 namespace MyLogger.Common;
 
-public abstract class CachedLoggerSettingsBase
+public class CachedLoggerSettingsBase
 {
+    public CachedLoggerSettingsBase() : this(null, LogLevel.Information) { }
+    public CachedLoggerSettingsBase(string configurationSection, LogLevel minimumLogLevel)
+    {
+        ConfigurationSection = configurationSection;
+        MinimumLogLevel = minimumLogLevel;
+    }
+
     public LogLevel MinimumLogLevel { get; init; } = LogLevel.Information;
-    public string? LoggerConfigurationSection { get; init; } = null;
+    public string? ConfigurationSection { get; init; } = null;
+
+    public override string ToString()
+    {
+        return $"{nameof(MinimumLogLevel)}={MinimumLogLevel}, {nameof(ConfigurationSection)}={ConfigurationSection ?? "null"}";
+    }
 }
